@@ -17,4 +17,20 @@ class GeoTest < Minitest::Test
 
     assert(rectangle.contains?(middle))
   end
+
+  def test_rectangle_does_not_contains
+    top_left = Point.new(0.0, 10.0)
+    bottom_right = Point.new(10.0, 0.0)
+    rectangle = Rectangle.new(top_left, bottom_right)
+
+    above = Point.new(top_left.x, top_left.y + 1)
+    left = Point.new(top_left.x - 1, top_left.y - 1)
+    below = Point.new(bottom_right.x, bottom_right.y - 1)
+    right = Point.new(bottom_right.x + 1, bottom_right.y)
+
+    refute(rectangle.contains?(above))
+    refute(rectangle.contains?(left))
+    refute(rectangle.contains?(below))
+    refute(rectangle.contains?(right))
+  end
 end
