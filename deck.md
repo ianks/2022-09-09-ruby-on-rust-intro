@@ -20,7 +20,10 @@ You may be new to Rust, and that's OK! You'll find that Rust has many of the thi
 
 :wave: I'm [**@ianks**](https://twitter.com/_ianks), and I work on the `liquid-perf` team. We are using Rust + WASM to improve the performance of Shopify's Liquid templating engine.
 
-I am also the creator of the [**`oxidize-rb`**](https://github.com/oxidize-rb) open-source org. Our goal is to make writing native Ruby extensions in Rust easier than it would be in C.
+- Live in Atlanta, GA
+- Creator of the [**`oxidize-rb`**](https://github.com/oxidize-rb) open-source org
+- Maintainer of [`rb-sys`](https://github.com/oxidize-rb/rb-sys)
+- Added Rust support to Bundler / RubyGems
 
 ---
 
@@ -74,15 +77,18 @@ void Init_hello(void) {
 
 The rumours are true, Rust has a steep learning curve. You will battle with the borrow checker, and fight with the compiler as you learn the language.
 
-**However**, Rust errors typically happen at compile time, rather than segfaulting at runtime. This means that you can fix your errors quickly, and you can be confident that your code will work.
+- Rust errors typically happen at compile time (rather than segfaulting at runtime)
+- Can be productive in Rust without fully groking the borrow checker
+- Community is very helpful, with a general sentiment of "we've all been there" towards beginners
+- You can do it!
 
 ---
 
 # Shipping a Ruby Extension
 
-When launching the `liquid-wasm` production verifier, I was expecting to spend days hunting down obscure segfaults.
-
-I was shocked to fine that, besides unimplemented features, things just worked. In my experience, Rust gives you a "confidence to ship" that you don't get C.
+- Launching the `liquid-wasm` production verifier
+- Things just worked
+- Rust gives you a "confidence to ship" that you don't get with C/C++.
 
 ---
 
@@ -95,14 +101,14 @@ I was shocked to fine that, besides unimplemented features, things just worked. 
 2. [cargo](https://doc.rust-lang.org/cargo/) for dependency management.
 3. Use the [rb-sys](https://github.com/oxidize-rb/rb-sys) gem for to make `cargo` work with Ruby (via `create_rust_makefile`).
 4. [rake-compiler](https://github.com/rake-compiler/rake-compiler) for compiling the extensions (as you would with C)
-5. _Not so distant future_: Support for `cargo` in RubyGems (done).
+5. _Not so distant future_: Support for `cargo` in RubyGems (done, available in Ruby 3.2).
+6. _Not so distant future_: Support for `bundle gem --rust` in Bundler (PR open, likely Ruby 3.2).
 
 ---
 
 # Demo Time
 
-I made a small gem which implements a `String#reverse` using Rust and C. Let's compare and contrast:
-
-- demos/ext/c
-- demos/ext/rust_rbsys
-- demos/ext/rust_magnus
+- `demos/ext/c`
+- `demos/ext/rust_rbsys`
+- `demos/ext/rust_magnus`
+- **BONUS**: Add support for `contains?` in `demos/ext/rust_magnus_geo` for a 🦄
