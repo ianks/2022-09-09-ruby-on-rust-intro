@@ -1,7 +1,11 @@
 use magnus::{
-    self as magnus, define_class, exception::not_imp_error, function, gc, method, prelude::*,
+    self as magnus, define_class, function, gc, method, prelude::*,
     DataTypeFunctions, Error, TypedData, Value,
 };
+
+trait Contains<T> {
+    fn contains(&self, other: &T) -> Result<bool, Error>;
+}
 
 // Create a new struct for magnus to wrap with `rb_data_typed_object_wrap`. This
 // will setup the boiler plate for making this struct accessible to Ruby.
@@ -75,13 +79,17 @@ impl Rectangle {
     fn bottom_right(&self) -> Value {
         self.bottom_right
     }
+}
 
-    /// Checks if the given `Point` is inside this `Rectangle`.
-    fn contains(&self, _other: &Point) -> Result<bool, Error> {
-        let _top_left = self.top_left.try_convert::<&Point>()?;
-        let _bottom_right = self.bottom_right.try_convert::<&Point>()?;
+impl Contains<Point> for Rectangle {
+    fn contains(&self, other: &Point) -> Result<bool, Error> {
+        let top_left = self.top_left.try_convert::<&Point>()?;
+        let bottom_right = self.bottom_right.try_convert::<&Point>()?;
 
-        Err(Error::new(not_imp_error(), "finish me!"))
+        Ok(
+            (top_left.x..bottom_right.x).contains(&other.x) 
+            && (top_left.y..bottom_right.y).contains(&other.y)
+        )
     }
 }
 
