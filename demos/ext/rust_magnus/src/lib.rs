@@ -1,8 +1,7 @@
 use magnus::{define_global_function, function, Error};
 
-pub fn reverse(input: String) -> Result<String, Error> {
-    let result: String = input.chars().rev().collect();
-    Ok(result)
+pub fn reverse(input: String) -> String {
+    input.chars().rev().collect()
 }
 
 #[magnus::init]
