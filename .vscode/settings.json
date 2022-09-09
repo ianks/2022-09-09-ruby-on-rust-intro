@@ -1,0 +1,8 @@
+{
+  "rust-analyzer.linkedProjects": ["./demos/Cargo.toml"],
+  "files.associations": {
+    "*.html.eex": "html",
+    "Rakefile": "ruby",
+    "demos.h": "c"
+  }
+}
