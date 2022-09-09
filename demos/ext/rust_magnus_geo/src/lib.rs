@@ -77,11 +77,12 @@ impl Rectangle {
     }
 
     /// Checks if the given `Point` is inside this `Rectangle`.
-    fn contains(&self, _other: &Point) -> Result<bool, Error> {
-        let _top_left = self.top_left.try_convert::<&Point>()?;
-        let _bottom_right = self.bottom_right.try_convert::<&Point>()?;
+    fn contains(&self, other: &Point) -> Result<bool, Error> {
+        let top_left = self.top_left.try_convert::<&Point>()?;
+        let bottom_right = self.bottom_right.try_convert::<&Point>()?;
 
-        Err(Error::new(not_imp_error(), "finish me!"))
+        Ok(other.x >= top_left.x && other.x <= bottom_right.x &&
+         other.y >= bottom_right.y && other.y <= top_left.y)
     }
 }
 
