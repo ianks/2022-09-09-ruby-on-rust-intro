@@ -17,4 +17,24 @@ class GeoTest < Minitest::Test
 
     assert(rectangle.contains?(middle))
   end
+
+  def test_rectangle_contains_edge
+    top_left = Point.new(0.0, 10.0)
+    bottom_right = Point.new(10.0, 0.0)
+    point1 = Point.new(10.0, 5.0)
+    point2 = Point.new(5.0, 10.0)
+    rectangle = Rectangle.new(top_left, bottom_right)
+
+    assert(rectangle.contains?(point1))
+    assert(rectangle.contains?(point2))
+  end
+
+  def test_rectangle_not_contains
+    top_left = Point.new(0.0, 10.0)
+    right_left = Point.new(10.0, 0.0)
+    outside = Point.new(100.0, 100.0)
+    rectangle = Rectangle.new(top_left, right_left)
+
+    refute(rectangle.contains?(outside))
+  end
 end
