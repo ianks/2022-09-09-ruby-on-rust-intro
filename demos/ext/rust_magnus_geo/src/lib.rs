@@ -1,5 +1,5 @@
 use magnus::{
-    self as magnus, define_class, exception::not_imp_error, function, gc, method, prelude::*,
+    self as magnus, define_class, function, gc, method, prelude::*,
     DataTypeFunctions, Error, TypedData, Value,
 };
 
@@ -36,6 +36,11 @@ impl Point {
     /// Calculate the distance between this point and another point.
     fn distance(&self, other: &Point) -> f64 {
         (((other.x - self.x).pow(2) + (other.y - self.y).pow(2)) as f64).sqrt()
+    }
+
+    /// Calculate the dot product between two points.
+    fn dot(&self, other: &Point) -> isize {
+        self.x * other.x + self.y * other.y
     }
 }
 
@@ -77,11 +82,38 @@ impl Rectangle {
     }
 
     /// Checks if the given `Point` is inside this `Rectangle`.
-    fn contains(&self, _other: &Point) -> Result<bool, Error> {
-        let _top_left = self.top_left.try_convert::<&Point>()?;
-        let _bottom_right = self.bottom_right.try_convert::<&Point>()?;
+    fn contains(&self, other: &Point) -> Result<bool, Error> {
+        /*
+        let top_left = self.top_left.try_convert::<&Point>()?;
+        let bottom_right = self.bottom_right.try_convert::<&Point>()?;
 
-        Err(Error::new(not_imp_error(), "finish me!"))
+        let contains_x = top_left.x <= other.x && other.x <= bottom_right.x;
+        let contains_y = top_left.y >= other.y && other.y >= bottom_right.y;
+        Ok(contains_x && contains_y)
+        */
+
+        // A and C are two corners of the rectangle.
+        let a = self.top_left.try_convert::<&Point>()?;
+        let c = self.bottom_right.try_convert::<&Point>()?;
+
+        // We assume the rectangle is regular, so we can calculate one of the other corners.
+        let b = Point::new(c.x, a.y);
+
+        // We can now calculate whether the point is inside the rectangle by the following formula:
+        //   0 <= dot(AB, AM) <= dot(AB, AB) &&
+        //   0 <= dot(BC, BM) <= dot(BC, BC)
+        // where M is the point we are checking, and A, B, and C are the corners of the rectangle.
+        let ab = Point::new(b.x - a.x, b.y - a.y);
+        let bc = Point::new(c.x - b.x, c.y - b.y);
+        let am = Point::new(other.x - a.x, other.y - a.y);
+        let bm = Point::new(other.x - b.x, other.y - b.y);
+
+        let abam = ab.dot(&am);
+        let abab = ab.dot(&ab);
+        let bcbm = bc.dot(&bm);
+        let bcbc = bc.dot(&bc);
+
+        Ok(0 <= abam && abam <= abab && 0 <= bcbm && bcbm <= bcbc)
     }
 }
 
@@ -95,6 +127,7 @@ fn init() -> Result<(), Error> {
     point_class.define_method("x", method!(Point::x, 0))?;
     point_class.define_method("y", method!(Point::y, 0))?;
     point_class.define_method("distance", method!(Point::distance, 1))?;
+    point_class.define_method("dot", method!(Point::distance, 1))?;
 
     let rectangle_class = define_class("Rectangle", Default::default())?;
     rectangle_class.define_singleton_method("new", function!(Rectangle::new, 2))?;
